@@ -1,0 +1,101 @@
+services:
+
+  open-webui:
+    image: ghcr.io/open-webui/open-webui:main
+    container_name: open-webui
+    restart: unless-stopped
+    environment:
+    - ENV=dev
+    - WEBUI_ADMIN_EMAIL=${OPENWEBUI_ADMIN_EMAIL}
+    - WEBUI_ADMIN_PASSWORD=${OPENWEBUI_ADMIN_PASSWORD}
+    - WEBUI_ADMIN_NAME=Admin
+    - ENABLE_API_KEYS=true
+    - ENABLE_OPENAI_API=true
+    - OPENAI_API_BASE_URL=https://generativelanguage.googleapis.com/v1beta/openai
+    - OPENAI_API_KEY=${GEMINI_API_KEY}
+    - ENABLE_OLLAMA_API=false
+    ports:
+      - "3000:8080"
+    volumes:
+      - open-webui-data:/app/backend/data
+    networks:
+      - ai-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/health"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+
+  setup-openwebui:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.setup-open-webui
+    environment:
+      - OPENWEBUI_ADMIN_EMAIL=${OPENWEBUI_ADMIN_EMAIL}
+      - OPENWEBUI_ADMIN_PASSWORD=${OPENWEBUI_ADMIN_PASSWORD}
+    volumes:
+      - open-webui-api-key:/shared
+    depends_on:
+      - open-webui
+    networks:
+      - ai-network
+
+  backend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.backend
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+      - JWT_SECRET_KEY=${JWT_SECRET_KEY}
+      - JWT_ALGORITHM=${JWT_ALGORITHM}
+      - ACCESS_TOKEN_EXPIRE_MINUTES=${ACCESS_TOKEN_EXPIRE_MINUTES}
+      - OPEN_WEB_UI_API_URL=http://open-webui:8080
+      - POSTGRES_USER=openwebuiadmin
+      - POSTGRES_DB=openwebui
+      - POSTGRES_HOST=${POSTGRES_HOST}
+    ports:
+      - "8000:8000"
+    volumes:
+      - open-webui-api-key:/shared:ro
+    depends_on:
+      open-webui:
+        condition: service_started
+      setup-openwebui:
+        condition: service_completed_successfully
+    networks:
+        - ai-network
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+      start_period: 10s
+  
+  frontend:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile.frontend
+    restart: unless-stopped
+    env_file:
+      - ../.env
+    environment:
+      - BACKEND_URL=http://backend:8000
+      - FRONTEND_TEST_MODE=false
+    ports:
+      - "8501:8501"
+    depends_on:
+      backend:
+        condition: service_healthy
+    networks:
+      - ai-network
+
+networks:
+  ai-network:
+
+volumes:
+  open-webui-data:
+  open-webui-api-key:

@@ -1,0 +1,38 @@
+# Example Terraform variable configuration.
+# Copy this file to terraform.tfvars and replace the placeholders
+# with values for your own environment.
+
+location            = "eastus2"
+resource_group_name = "rg-openwebui"
+vm_name             = "vm-openwebui"
+
+# PLACEHOLDER: Linux administrator username.
+admin_username = "azureadmin"
+
+# PLACEHOLDER: Replace with your SSH public key.
+ssh_public_key = "YOUR_SSH_PUBLIC_KEY_HERE"
+
+# PLACEHOLDER: Replace with the public IP address that should be allowed to SSH into the Azure VM.
+allowed_ssh_cidr = "YOUR_PUBLIC_IP/32"
+
+# PLACEHOLDER: Replace with the public IP address that should be allowed to access Open WebUI.
+allowed_web_cidr = "YOUR_PUBLIC_IP/32"
+
+postgresql_server_name           = "psql-openwebui-project"
+postgresql_database_name         = "openwebui"
+postgresql_version               = "18"
+
+postgresql_admin_username = "openwebuiadmin"
+
+# PLACEHOLDER
+postgresql_admin_password = "YOUR_POSTGRESQL_PASSWORD_HERE"
+
+postgresql_storage_mb            = 32768
+postgresql_sku_name              = "B_Standard_B1ms"
+postgresql_backup_retention_days = 7
+
+key_vault_name           = "YOUR_KEY_VAULT_NAME_HERE"
+gemini_api_key           = "YOUR_GEMINI_API_KEY_HERE"
+jwt_secret_key           = "YOUR_JWT_SECRET_KEY_HERE"
+openwebui_admin_email = "YOUR_ADMIN_EMAIL_HERE"
+openwebui_admin_password = "YOUR_ADMIN_PASSWORD_HERE"

@@ -1,0 +1,27 @@
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+terraform.tfvars
+*.tfplan
+tfplan
+
+
+# Secrets / credentials
+.env
+*.pem
+id_rsa
+id_rsa.pub
+id_ed25519
+id_ed25519.pub
+
+
+# Logs
+*.log
+
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.pyc
