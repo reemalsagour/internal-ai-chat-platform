@@ -295,3 +295,15 @@ On Azure, three additional values are set automatically and are **not** part of 
 * Uploaded documents are stored in a Docker volume on the VM; recreating the VM removes them.
 * `.env` on the Azure VM is plain text once generated from Key Vault; the applications do not read secrets from Key Vault directly at runtime.
 * Each deployment is independent and tied to a single Azure subscription — there is no shared or multi-user setup yet.
+
+---
+
+## 9. Team
+
+Built as a team capstone project for the Saudi Digital Academy Microsoft Azure Cloud Computing Bootcamp.
+
+| Name | GitHub | Contributions |
+|------|--------|---------------|
+| Reem Alsagour | [@reemalsagour](https://github.com/reemalsagour) | Azure infrastructure with Terraform, Docker and Docker Compose, deployment automation (Bash and PowerShell scripts), secrets management with Azure Key Vault, README |
+| Fatimah Al Ibrahim | [@FatimahAlIbrahim](https://github.com/FatimahAlIbrahim) | Backend development (FastAPI), Open WebUI integration, database design and implementation, business logic, seed dataset, Docker and Docker Compose, README |
+| Raghad Almejwez | [@raghadkhaledmj](https://github.com/raghadkhaledmj) | Frontend development (Streamlit), API integration, UI/UX design and implementation, chat interface |
